@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Owl VPN — Premium VPN Configuration Service</title>
+<meta name="description" content="Night Owl VPN provides high-quality VPN configurations using premium VPS servers for better speed, stability, and performance.">
+<meta name="keywords" content="VPN, Night Owl VPN, premium VPN, VPN configuration, VPS, Sri Lanka VPN">
+<meta property="og:title" content="Night Owl VPN — Premium VPN Configuration Service">
+<meta property="og:description" content="High-quality VPN configurations using premium VPS servers.">
+<meta property="og:type" content="website">
+<link rel="icon" href="https://z-cdn-media.chatglm.cn/files/f01f397d-ffe6-4cc5-9872-216b348d74f5.png?auth_key=1879679858-255b9462dac043afb8c8ca2035e9797f-0-6a7ed80671615372ebb00ac247ed27ad" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg-primary:#060614;--bg-secondary:#0a0a2e;--bg-tertiary:#0f0f3d;
+  --neon-cyan:#00e5ff;--neon-blue:#2979ff;--neon-purple:#a855f7;
+  --neon-gold:#fbbf24;--neon-green:#00ff88;--neon-pink:#ff0080;
+  --text-primary:#ffffff;--text-secondary:#8892b0;--text-muted:#4a5568;
+  --glass-bg:rgba(255,255,255,0.03);--glass-border:rgba(255,255,255,0.08);
+  --glass-hover:rgba(255,255,255,0.06);
+  --radius:16px;--radius-sm:10px;--radius-xs:6px;
+  --transition:0.3s cubic-bezier(0.4,0,0.2,1);
+}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--neon-cyan) var(--bg-primary)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg-primary)}
+::-webkit-scrollbar-thumb{background:var(--neon-cyan);border-radius:3px}
+body{
+  font-family:'Inter',sans-serif;background:var(--bg-primary);color:var(--text-primary);
+  overflow-x:hidden;line-height:1.6;cursor:none;
+}
+::selection{background:var(--neon-cyan);color:var(--bg-primary)}
+a{color:inherit;text-decoration:none;cursor:none}
+button,input,select,textarea{font-family:inherit;cursor:none}
+
+/* ===== LOADER ===== */
+#loader{
+  position:fixed;inset:0;z-index:10000;background:var(--bg-primary);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 0.6s ease,visibility 0.6s ease;
+}
+#loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loader-logo{width:100px;height:100px;animation:loaderPulse 1.5s ease-in-out infinite}
+.loader-ring{
+  width:140px;height:140px;border:2px solid transparent;border-top-color:var(--neon-cyan);
+  border-right-color:var(--neon-purple);border-radius:50%;
+  position:absolute;animation:loaderSpin 1.2s linear infinite;
+}
+.loader-text{
+  font-family:'Orbitron',sans-serif;font-size:0.75rem;letter-spacing:0.3em;
+  color:var(--neon-cyan);margin-top:32px;text-transform:uppercase;
+  animation:loaderBlink 1s ease-in-out infinite;
+}
+@keyframes loaderPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:0.8}}
+@keyframes loaderSpin{to{transform:rotate(360deg)}}
+@keyframes loaderBlink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* ===== CUSTOM CURSOR ===== */
+#cursor{
+  width:8px;height:8px;background:var(--neon-cyan);border-radius:50%;
+  position:fixed;pointer-events:none;z-index:9999;
+  transition:transform 0.15s ease,opacity 0.15s ease;
+  box-shadow:0 0 10px var(--neon-cyan),0 0 20px rgba(0,229,255,0.3);
+}
+#cursor-follower{
+  width:36px;height:36px;border:1.5px solid rgba(0,229,255,0.4);border-radius:50%;
+  position:fixed;pointer-events:none;z-index:9998;
+  transition:transform 0.3s ease,width 0.3s ease,height 0.3s ease,border-color 0.3s ease;
+}
+#cursor.hover{transform:scale(2.5);background:var(--neon-purple);box-shadow:0 0 15px var(--neon-purple)}
+#cursor-follower.hover{width:50px;height:50px;border-color:rgba(168,85,247,0.5)}
+
+/* ===== SCAN LINE ===== */
+.scan-line{
+  position:fixed;top:0;left:0;right:0;height:2px;z-index:9990;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--neon-cyan),transparent);
+  opacity:0.15;animation:scanMove 4s linear infinite;
+}
+@keyframes scanMove{0%{top:-2px}100%{top:100vh}}
+
+/* ===== PARTICLES CANVAS ===== */
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ===== NAVIGATION ===== */
+#navbar{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:0 24px;height:70px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(6,6,20,0.6);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--glass-border);
+  transition:var(--transition);
+}
+#navbar.scrolled{background:rgba(6,6,20,0.9);box-shadow:0 4px 30px rgba(0,229,255,0.05)}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo img{height:38px;width:auto}
+.nav-logo span{
+  font-family:'Orbitron',sans-serif;font-size:0.85rem;font-weight:700;
+  background:linear-gradient(135deg,var(--neon-cyan),var(--neon-purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{
+  font-size:0.8rem;font-weight:500;letter-spacing:0.05em;
+  color:var(--text-secondary);transition:var(--transition);position:relative;
+  text-transform:uppercase;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;
+  background:var(--neon-cyan);transition:width 0.3s ease;
+}
+.nav-links a:hover{color:var(--neon-cyan)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{
+  padding:8px 20px !important;border-radius:var(--radius-xs) !important;
+  background:linear-gradient(135deg,var(--neon-cyan),var(--neon-blue)) !important;
+  color:var(--bg-primary) !important;font-weight:600 !important;
+  box-shadow:0 0 20px rgba(0,229,255,0.2);
+}
+.nav-cta::after{display:none !important}
+.nav-cta:hover{box-shadow:0 0 30px rgba(0,229,255,0.4);transform:translateY(-1px)}
+.hamburger{
+  display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;
+}
+.hamburger span{
+  width:24px;height:2px;background:var(--text-primary);transition:var(--transition);
+  border-radius:1px;
+}
+.hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.active span:nth-child(2){opacity:0}
+.hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* ===== MOBILE MENU ===== */
+#mobile-menu{
+  position:fixed;inset:0;z-index:999;background:rgba(6,6,20,0.95);
+  backdrop-filter:blur(30px);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:32px;
+  opacity:0;visibility:hidden;transition:var(--transition);
+}
+#mobile-menu.active{opacity:1;visibility:visible}
+#mobile-menu a{
+  font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:600;
+  color:var(--text-secondary);transition:var(--transition);text-transform:uppercase;
+  letter-spacing:0.1em;
+}
+#mobile-menu a:hover{color:var(--neon-cyan);text-shadow:0 0 20px rgba(0,229,255,0.5)}
+
+/* ===== SECTION BASE ===== */
+section{position:relative;z-index:1;padding:100px 24px}
+.container{max-width:1200px;margin:0 auto}
+.section-label{
+  font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:600;
+  letter-spacing:0.25em;text-transform:uppercase;color:var(--neon-cyan);
+  margin-bottom:12px;display:flex;align-items:center;gap:10px;
+}
+.section-label::before{
+  content:'';width:30px;height:1px;background:var(--neon-cyan);
+}
+.section-title{
+  font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);
+  font-weight:800;line-height:1.2;margin-bottom:16px;
+}
+.section-title .gradient{
+  background:linear-gradient(135deg,var(--neon-cyan),var(--neon-purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.section-desc{color:var(--text-secondary);font-size:1rem;max-width:600px;line-height:1.7}
+.text-center{text-align:center}
+.text-center .section-label{justify-content:center}
+.text-center .section-desc{margin:0 auto}
+
+/* ===== HERO ===== */
+#hero{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding-top:70px;position:relative;overflow:hidden;
+}
+.hero-bg-glow{
+  position:absolute;width:600px;height:600px;border-radius:50%;
+  filter:blur(150px);opacity:0.15;pointer-events:none;
+}
+.hero-bg-glow.cyan{background:var(--neon-cyan);top:-200px;left:-100px}
+.hero-bg-glow.purple{background:var(--neon-purple);bottom:-200px;right:-100px}
+.hero-bg-glow.blue{background:var(--neon-blue);top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px}
+.hero-content{position:relative;z-index:2;max-width:900px}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 20px;
+  border-radius:50px;background:var(--glass-bg);border:1px solid var(--glass-border);
+  backdrop-filter:blur(10px);margin-bottom:32px;
+  font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--neon-green);
+}
+.hero-badge .dot{width:6px;height:6px;background:var(--neon-green);border-radius:50%;animation:dotPulse 2s ease infinite}
+@keyframes dotPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,136,0.4)}50%{opacity:0.7;box-shadow:0 0 0 6px rgba(0,255,136,0)}}
+.hero-title{
+  font-family:'Orbitron',sans-serif;font-size:clamp(2.2rem,6vw,4.5rem);
+  font-weight:900;line-height:1.1;margin-bottom:8px;letter-spacing:-0.02em;
+}
+.hero-title .night{color:var(--neon-cyan);text-shadow:0 0 40px rgba(0,229,255,0.3)}
+.hero-title .owl{color:var(--neon-gold);text-shadow:0 0 40px rgba(251,191,36,0.3)}
+.hero-title .vpn{
+  background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-logo-img{width:120px;height:auto;margin-bottom:24px;animation:floatY 3s ease-in-out infinite}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.hero-typewriter{
+  font-size:clamp(0.9rem,2vw,1.15rem);color:var(--text-secondary);
+  margin-bottom:40px;min-height:1.8em;font-weight:400;
+}
+.hero-typewriter .typed-cursor{color:var(--neon-cyan);animation:cursorBlink 0.8s step-end infinite}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.hero-shield{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:500px;height:500px;pointer-events:none;opacity:0.06;
+}
+.shield-ring{
+  position:absolute;inset:0;border:1px solid var(--neon-cyan);border-radius:50%;
+  animation:shieldPulse 4s ease-in-out infinite;
+}
+.shield-ring:nth-child(2){inset:40px;animation-delay:0.5s;border-color:var(--neon-purple)}
+.shield-ring:nth-child(3){inset:80px;animation-delay:1s;border-color:var(--neon-blue)}
+@keyframes shieldPulse{0%,100%{transform:scale(1);opacity:0.3}50%{transform:scale(1.05);opacity:0.8}}
+
+/* ===== BUTTONS ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:14px 32px;
+  border-radius:var(--radius-xs);font-size:0.85rem;font-weight:600;
+  letter-spacing:0.03em;transition:all 0.3s ease;border:none;position:relative;overflow:hidden;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--neon-cyan),var(--neon-blue));
+  color:var(--bg-primary);box-shadow:0 0 25px rgba(0,229,255,0.25);
+}
+.btn-primary:hover{box-shadow:0 0 40px rgba(0,229,255,0.4);transform:translateY(-2px)}
+.btn-secondary{
+  background:transparent;color:var(--text-primary);
+  border:1px solid var(--glass-border);
+}
+.btn-secondary:hover{border-color:var(--neon-cyan);color:var(--neon-cyan);box-shadow:0 0 20px rgba(0,229,255,0.1)}
+.btn-gold{
+  background:linear-gradient(135deg,var(--neon-gold),#f59e0b);
+  color:var(--bg-primary);box-shadow:0 0 25px rgba(251,191,36,0.25);
+}
+.btn-gold:hover{box-shadow:0 0 40px rgba(251,191,36,0.4);transform:translateY(-2px)}
+.btn-sm{padding:10px 20px;font-size:0.78rem}
+.btn-full{width:100%;justify-content:center}
+
+/* ===== GLASS CARD ===== */
+.glass-card{
+  background:var(--glass-bg);backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);border-radius:var(--radius);
+  padding:32px;transition:all 0.4s ease;position:relative;overflow:hidden;
+}
+.glass-card::before{
+  content:'';position:absolute;inset:0;border-radius:var(--radius);
+  background:linear-gradient(135deg,rgba(0,229,255,0.05),transparent,rgba(168,85,247,0.05));
+  opacity:0;transition:opacity 0.4s ease;
+}
+.glass-card:hover{border-color:rgba(0,229,255,0.2);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.3)}
+.glass-card:hover::before{opacity:1}
+
+/* ===== ABOUT ===== */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.about-features{display:flex;flex-direction:column;gap:20px;margin-top:32px}
+.about-feature{
+  display:flex;gap:16px;align-items:flex-start;
+  padding:16px;border-radius:var(--radius-sm);
+  background:rgba(0,229,255,0.03);border:1px solid rgba(0,229,255,0.06);
+  transition:var(--transition);
+}
+.about-feature:hover{background:rgba(0,229,255,0.06);border-color:rgba(0,229,255,0.15)}
+.about-feature-icon{
+  width:44px;height:44px;min-width:44px;border-radius:var(--radius-xs);
+  background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(168,85,247,0.15));
+  display:flex;align-items:center;justify-content:center;
+  color:var(--neon-cyan);font-size:1.2rem;
+}
+.about-feature h4{font-size:0.9rem;font-weight:600;margin-bottom:4px}
+.about-feature p{font-size:0.8rem;color:var(--text-secondary);line-height:1.5}
+.about-visual{
+  display:flex;align-items:center;justify-content:center;position:relative;
+}
+.about-visual-inner{
+  width:320px;height:320px;border-radius:50%;position:relative;
+  background:radial-gradient(circle,rgba(0,229,255,0.08),transparent 70%);
+  display:flex;align-items:center;justify-content:center;
+}
+.about-visual-inner .icon{font-size:5rem;color:var(--neon-cyan);opacity:0.6;animation:floatY 4s ease-in-out infinite}
+.orbit-dot{
+  position:absolute;width:10px;height:10px;border-radius:50%;
+  box-shadow:0 0 15px currentColor;
+}
+.orbit-dot:nth-child(2){color:var(--neon-cyan);top:10%;left:50%;animation:orbit1 6s linear infinite}
+.orbit-dot:nth-child(3){color:var(--neon-purple);bottom:15%;right:10%;animation:orbit2 8s linear infinite}
+.orbit-dot:nth-child(4){color:var(--neon-gold);bottom:10%;left:15%;animation:orbit3 7s linear infinite}
+@keyframes orbit1{0%{transform:rotate(0deg) translateX(160px) rotate(0deg)}100%{transform:rotate(360deg) translateX(160px) rotate(-360deg)}}
+@keyframes orbit2{0%{transform:rotate(120deg) translateX(160px) rotate(-120deg)}100%{transform:rotate(480deg) translateX(160px) rotate(-480deg)}}
+@keyframes orbit3{0%{transform:rotate(240deg) translateX(160px) rotate(-240deg)}100%{transform:rotate(600deg) translateX(160px) rotate(-600deg)}}
+
+/* ===== PRICING ===== */
+#pricing{background:linear-gradient(180deg,transparent,rgba(0,229,255,0.02),transparent)}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:48px}
+.pricing-card{
+  background:var(--glass-bg);backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);border-radius:var(--radius);
+  padding:32px 24px;text-align:center;transition:all 0.4s ease;
+  position:relative;overflow:hidden;
+}
+.pricing-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  transition:var(--transition);
+}
+.pricing-card:nth-child(1)::after{background:linear-gradient(90deg,transparent,var(--neon-cyan),transparent)}
+.pricing-card:nth-child(2)::after{background:linear-gradient(90deg,transparent,var(--neon-blue),transparent)}
+.pricing-card:nth-child(3)::after{background:linear-gradient(90deg,transparent,var(--neon-purple),transparent)}
+.pricing-card:nth-child(4)::after{background:linear-gradient(90deg,transparent,var(--neon-gold),transparent)}
+.pricing-card:hover{transform:translateY(-8px);border-color:rgba(0,229,255,0.2)}
+.pricing-card:nth-child(1):hover{box-shadow:0 20px 60px rgba(0,229,255,0.1)}
+.pricing-card:nth-child(2):hover{box-shadow:0 20px 60px rgba(41,121,255,0.1)}
+.pricing-card:nth-child(3):hover{box-shadow:0 20px 60px rgba(168,85,247,0.1)}
+.pricing-card:nth-child(4):hover{box-shadow:0 20px 60px rgba(251,191,36,0.15)}
+.pricing-badge{
+  position:absolute;top:16px;right:16px;padding:4px 12px;
+  border-radius:50px;font-size:0.65rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.1em;
+}
+.pricing-card:nth-child(4) .pricing-badge{background:linear-gradient(135deg,var(--neon-gold),#f59e0b);color:var(--bg-primary)}
+.pricing-data{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:4px}
+.pricing-card:nth-child(1) .pricing-data{color:var(--neon-cyan)}
+.pricing-card:nth-child(2) .pricing-data{color:var(--neon-blue)}
+.pricing-card:nth-child(3) .pricing-data{color:var(--neon-purple)}
+.pricing-card:nth-child(4) .pricing-data{color:var(--neon-gold)}
+.pricing-price{
+  font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;
+  margin:16px 0 4px;
+}
+.pricing-card:nth-child(1) .pricing-price{color:var(--neon-cyan);text-shadow:0 0 30px rgba(0,229,255,0.2)}
+.pricing-card:nth-child(2) .pricing-price{color:var(--neon-blue);text-shadow:0 0 30px rgba(41,121,255,0.2)}
+.pricing-card:nth-child(3) .pricing-price{color:var(--neon-purple);text-shadow:0 0 30px rgba(168,85,247,0.2)}
+.pricing-card:nth-child(4) .pricing-price{color:var(--neon-gold);text-shadow:0 0 30px rgba(251,191,36,0.2)}
+.pricing-currency{font-size:1rem;font-weight:500;vertical-align:super}
+.pricing-period{font-size:0.75rem;color:var(--text-muted);margin-bottom:24px}
+.pricing-features{list-style:none;text-align:left;margin-bottom:28px;display:flex;flex-direction:column;gap:10px}
+.pricing-features li{
+  display:flex;align-items:center;gap:10px;font-size:0.8rem;color:var(--text-secondary);
+}
+.pricing-features li .iconify{color:var(--neon-green);font-size:1rem;flex-shrink:0}
+.pricing-card:nth-child(4){border-color:rgba(251,191,36,0.15);background:rgba(251,191,36,0.03)}
+
+/* ===== SERVICE INFO ===== */
+.service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+.service-card{
+  background:var(--glass-bg);backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);border-radius:var(--radius);
+  padding:28px;transition:all 0.4s ease;display:flex;gap:16px;align-items:flex-start;
+}
+.service-card:hover{border-color:rgba(0,229,255,0.2);transform:translateY(-2px)}
+.service-card .num{
+  font-family:'Orbitron',sans-serif;font-size:1.8rem;font-weight:900;
+  color:rgba(0,229,255,0.15);min-width:40px;line-height:1;
+}
+.service-card h4{font-size:0.9rem;font-weight:600;margin-bottom:6px}
+.service-card p{font-size:0.8rem;color:var(--text-secondary);line-height:1.6}
+.service-note{
+  margin-top:32px;padding:20px 24px;border-radius:var(--radius-sm);
+  background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.15);
+  display:flex;align-items:center;gap:12px;
+}
+.service-note .iconify{color:var(--neon-gold);font-size:1.3rem;flex-shrink:0}
+.service-note p{font-size:0.82rem;color:var(--neon-gold);line-height:1.5}
+
+/* ===== SIM PACKAGES ===== */
+#sim-packages{background:linear-gradient(180deg,transparent,rgba(168,85,247,0.02),transparent)}
+.sim-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+.sim-card{
+  background:var(--glass-bg);backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);border-radius:var(--radius);
+  padding:28px;transition:all 0.4s ease;position:relative;overflow:hidden;
+}
+.sim-card::before{
+  content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+  transition:var(--transition);
+}
+.sim-card:hover{transform:translateY(-4px);border-color:rgba(0,229,255,0.15)}
+.sim-card .sim-provider{
+  font-family:'Orbitron',sans-serif;font-size:0.75rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.15em;margin-bottom:16px;
+}
+.sim-card .sim-packages{display:flex;flex-direction:column;gap:10px}
+.sim-card .sim-pkg{
+  padding:12px 16px;border-radius:var(--radius-xs);
+  background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);
+  font-size:0.82rem;color:var(--text-secondary);transition:var(--transition);
+}
+.sim-card .sim-pkg:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1)}
+.sim-card .sim-pkg strong{color:var(--text-primary);font-weight:600}
+.sim-note-label{
+  font-size:0.7rem;color:var(--text-muted);margin-top:8px;font-style:italic;
+}
+/* SIM card accent colors */
+.sim-card.dialog::before{background:var(--neon-blue)}
+.sim-card.dialog .sim-provider{color:var(--neon-blue)}
+.sim-card.slt::before{background:var(--neon-cyan)}
+.sim-card.slt .sim-provider{color:var(--neon-cyan)}
+.sim-card.airtel-old::before{background:#ff6b35}
+.sim-card.airtel-old .sim-provider{color:#ff6b35}
+.sim-card.airtel-new::before{background:var(--neon-pink)}
+.sim-card.airtel-new .sim-provider{color:var(--neon-pink)}
+.sim-card.mobitel::before{background:var(--neon-green)}
+.sim-card.mobitel .sim-provider{color:var(--neon-green)}
+.sim-card.hutch::before{background:var(--neon-purple)}
+.sim-card.hutch .sim-provider{color:var(--neon-purple)}
+.sim-disclaimer{
+  margin-top:32px;padding:20px 24px;border-radius:var(--radius-sm);
+  background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.15);
+  text-align:center;
+}
+.sim-disclaimer p{font-size:0.82rem;color:var(--text-secondary);line-height:1.5}
+
+/* ===== PAYMENT ===== */
+.payment-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
+.payment-card{
+  background:var(--glass-bg);backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);border-radius:var(--radius);
+  padding:32px;transition:all 0.4s ease;
+}
+.payment-card:hover{border-color:rgba(0,229,255,0.2)}
+.payment-card h3{
+  font-family:'Orbitron',sans-serif;font-size:0.85rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.1em;margin-bottom:24px;
+  display:flex;align-items:center;gap:10px;
+}
+.payment-card h3 .iconify{font-size:1.2rem}
+.payment-detail{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.payment-detail:last-of-type{border-bottom:none}
+.payment-detail .label{font-size:0.8rem;color:var(--text-muted)}
+.payment-detail .value{
+  font-family:'JetBrains Mono',monospace;font-size:0.85rem;
+  color:var(--text-primary);font-weight:500;
+}
+.payment-warning{
+  margin-top:24px;padding:16px 20px;border-radius:var(--radius-xs);
+  background:rgba(255,0,128,0.05);border:1px solid rgba(255,0,128,0.15);
+  display:flex;align-items:center;gap:10px;
+}
+.payment-warning .iconify{color:var(--neon-pink);font-size:1.1rem;flex-shrink:0}
+.payment-warning p{font-size:0.8rem;color:var(--neon-pink)}
+
+/* ===== ORDER FORM ===== */
+#order{background:linear-gradient(180deg,transparent,rgba(0,229,255,0.02),transparent)}
+.order-form-wrapper{
+  max-width:680px;margin:48px auto 0;
+  background:var(--glass-bg);backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);border-radius:var(--radius);
+  padding:40px;
+}
+.form-group{margin-bottom:20px}
+.form-group label{
+  display:block;font-size:0.8rem;font-weight:600;color:var(--text-secondary);
+  margin-bottom:8px;letter-spacing:0.03em;
+}
+.form-group input,.form-group select{
+  width:100%;padding:14px 16px;border-radius:var(--radius-xs);
+  background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);
+  color:var(--text-primary);font-size:0.9rem;transition:var(--transition);
+  outline:none;
+}
+.form-group input::placeholder{color:var(--text-muted)}
+.form-group input:focus,.form-group select:focus{
+  border-color:var(--neon-cyan);box-shadow:0 0 0 3px rgba(0,229,255,0.1);
+  background:rgba(0,229,255,0.03);
+}
+.form-group select option{background:var(--bg-secondary);color:var(--text-primary)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-file{
+  border:2px dashed var(--glass-border);border-radius:var(--radius-xs);
+  padding:28px;text-align:center;transition:var(--transition);cursor:pointer;
+  position:relative;overflow:hidden;
+}
+.form-file:hover{border-color:var(--neon-cyan);background:rgba(0,229,255,0.02)}
+.form-file input[type="file"]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;
+}
+.form-file .iconify{font-size:2rem;color:var(--text-muted);margin-bottom:8px}
+.form-file p{font-size:0.8rem;color:var(--text-muted)}
+.form-file .file-name{color:var(--neon-cyan);font-weight:500;margin-top:4px;display:none}
+.device-id-group{display:none;transition:var(--transition)}
+.device-id-group.show{display:block}
+.form-submit-note{
+  margin-top:16px;text-align:center;font-size:0.75rem;color:var(--text-muted);
+}
+
+/* ===== FAQ ===== */
+.faq-list{max-width:760px;margin:48px auto 0;display:flex;flex-direction:column;gap:12px}
+.faq-item{
+  background:var(--glass-bg);backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);border-radius:var(--radius-sm);
+  overflow:hidden;transition:var(--transition);
+}
+.faq-item.active{border-color:rgba(0,229,255,0.2)}
+.faq-question{
+  padding:20px 24px;display:flex;justify-content:space-between;align-items:center;
+  cursor:pointer;transition:var(--transition);user-select:none;
+}
+.faq-question:hover{background:rgba(0,229,255,0.02)}
+.faq-question h4{font-size:0.88rem;font-weight:600;flex:1;padding-right:16px}
+.faq-question .icon{
+  font-size:1.2rem;color:var(--neon-cyan);transition:transform 0.3s ease;flex-shrink:0;
+}
+.faq-item.active .faq-question .icon{transform:rotate(45deg)}
+.faq-answer{
+  max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.4s ease;
+}
+.faq-item.active .faq-answer{max-height:300px}
+.faq-answer p{
+  padding:0 24px 20px;font-size:0.82rem;color:var(--text-secondary);line-height:1.7;
+}
+
+/* ===== CONTACT ===== */
+#contact{background:linear-gradient(180deg,transparent,rgba(168,85,247,0.02),transparent)}
+.contact-grid{display:flex;justify-content:center;gap:24px;margin-top:48px;flex-wrap:wrap}
+.contact-card{
+  display:flex;align-items:center;gap:14px;padding:20px 28px;
+  background:var(--glass-bg);backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);border-radius:var(--radius-sm);
+  transition:all 0.4s ease;min-width:200px;justify-content:center;
+}
+.contact-card:hover{transform:translateY(-4px);border-color:rgba(0,229,255,0.2)}
+.contact-card .iconify{font-size:1.5rem}
+.contact-card span{font-size:0.85rem;font-weight:500}
+.contact-card.whatsapp .iconify{color:#25d366}
+.contact-card.facebook .iconify{color:#1877f2}
+.contact-card.tiktok .iconify{color:var(--neon-pink)}
+
+/* ===== FOOTER ===== */
+footer{
+  position:relative;z-index:1;padding:60px 24px 24px;
+  border-top:1px solid var(--glass-border);
+  background:rgba(6,6,20,0.8);backdrop-filter:blur(20px);
+}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;max-width:1200px;margin:0 auto}
+.footer-brand img{height:40px;margin-bottom:12px}
+.footer-brand p{font-size:0.82rem;color:var(--text-secondary);line-height:1.6;max-width:300px}
+.footer-col h4{
+  font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.15em;color:var(--text-primary);
+  margin-bottom:16px;
+}
+.footer-col a{
+  display:block;font-size:0.82rem;color:var(--text-secondary);
+  padding:6px 0;transition:var(--transition);
+}
+.footer-col a:hover{color:var(--neon-cyan);padding-left:6px}
+.footer-social{display:flex;gap:12px;margin-top:20px}
+.footer-social a{
+  width:38px;height:38px;border-radius:var(--radius-xs);
+  background:var(--glass-bg);border:1px solid var(--glass-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;transition:var(--transition);padding:0;
+}
+.footer-social a:hover{border-color:var(--neon-cyan);color:var(--neon-cyan);transform:translateY(-2px);padding-left:0}
+.footer-bottom{
+  max-width:1200px;margin:40px auto 0;padding-top:24px;
+  border-top:1px solid var(--glass-border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+}
+.footer-bottom p{font-size:0.75rem;color:var(--text-muted)}
+.footer-glow{
+  position:absolute;top:-100px;left:50%;transform:translateX(-50%);
+  width:400px;height:200px;background:var(--neon-cyan);
+  filter:blur(150px);opacity:0.05;pointer-events:none;
+}
+
+/* ===== TOAST ===== */
+#toast-container{
+  position:fixed;bottom:24px;right:24px;z-index:10001;
+  display:flex;flex-direction:column;gap:10px;
+}
+.toast{
+  padding:14px 20px;border-radius:var(--radius-xs);
+  background:rgba(10,10,46,0.95);backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);font-size:0.82rem;
+  display:flex;align-items:center;gap:10px;
+  animation:toastIn 0.4s ease;min-width:280px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.4);
+}
+.toast.success{border-color:rgba(0,255,136,0.2)}
+.toast.success .iconify{color:var(--neon-green)}
+.toast.info{border-color:rgba(0,229,255,0.2)}
+.toast.info .iconify{color:var(--neon-cyan)}
+.toast.out{animation:toastOut 0.3s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(40px)}}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal{opacity:0;transform:translateY(30px);transition:all 0.7s cubic-bezier(0.4,0,0.2,1)}
+.reveal.active{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:0.1s}
+.reveal-delay-2{transition-delay:0.2s}
+.reveal-delay-3{transition-delay:0.3s}
+.reveal-delay-4{transition-delay:0.4s}
+.reveal-delay-5{transition-delay:0.5s}
+.reveal-delay-6{transition-delay:0.6s}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+  .pricing-grid{grid-template-columns:repeat(2,1fr)}
+  .service-grid{grid-template-columns:repeat(2,1fr)}
+  .sim-grid{grid-template-columns:repeat(2,1fr)}
+  .about-grid{grid-template-columns:1fr;gap:40px}
+  .about-visual{order:-1}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
+}
+@media(max-width:768px){
+  body{cursor:auto}
+  #cursor,#cursor-follower{display:none}
+  .scan-line{display:none}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  section{padding:70px 16px}
+  .hero-title{font-size:clamp(1.8rem,8vw,3rem)}
+  .hero-shield{display:none}
+  .pricing-grid{grid-template-columns:1fr}
+  .service-grid{grid-template-columns:1fr}
+  .sim-grid{grid-template-columns:1fr}
+  .payment-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .order-form-wrapper{padding:24px}
+  .footer-grid{grid-template-columns:1fr;gap:24px}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .contact-grid{flex-direction:column;align-items:center}
+  .hero-buttons{flex-direction:column;align-items:center}
+  .btn{width:100%;justify-content:center}
+  .about-visual-inner{width:240px;height:240px}
+  .orbit-dot:nth-child(2){animation-name:orbit1m}
+  .orbit-dot:nth-child(3){animation-name:orbit2m}
+  .orbit-dot:nth-child(4){animation-name:orbit3m}
+  @keyframes orbit1m{0%{transform:rotate(0deg) translateX(120px) rotate(0deg)}100%{transform:rotate(360deg) translateX(120px) rotate(-360deg)}}
+  @keyframes orbit2m{0%{transform:rotate(120deg) translateX(120px) rotate(-120deg)}100%{transform:rotate(480deg) translateX(120px) rotate(-480deg)}}
+  @keyframes orbit3m{0%{transform:rotate(240deg) translateX(120px) rotate(-240deg)}100%{transform:rotate(600deg) translateX(120px) rotate(-600deg)}}
+}
+@media(max-width:480px){
+  .hero-logo-img{width:80px}
+  .pricing-card{padding:24px 20px}
+  .contact-card{min-width:unset;width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LOADER ===== -->
+<div id="loader">
+  <div style="position:relative;display:flex;align-items:center;justify-content:center">
+    <div class="loader-ring"></div>
+    <img src="https://z-cdn-media.chatglm.cn/files/f01f397d-ffe6-4cc5-9872-216b348d74f5.png?auth_key=1879679858-255b9462dac043afb8c8ca2035e9797f-0-6a7ed80671615372ebb00ac247ed27ad" alt="Night Owl VPN" class="loader-logo">
+  </div>
+  <div class="loader-text">Initializing Secure Connection</div>
+</div>
+
+<!-- ===== CUSTOM CURSOR ===== -->
+<div id="cursor"></div>
+<div id="cursor-follower"></div>
+
+<!-- ===== SCAN LINE ===== -->
+<div class="scan-line"></div>
+
+<!-- ===== PARTICLES ===== -->
+<canvas id="particles"></canvas>
+
+<!-- ===== NAVIGATION ===== -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <img src="https://z-cdn-media.chatglm.cn/files/f01f397d-ffe6-4cc5-9872-216b348d74f5.png?auth_key=1879679858-255b9462dac043afb8c8ca2035e9797f-0-6a7ed80671615372ebb00ac247ed27ad" alt="Night Owl VPN">
+    <span>NightOwl VPN</span>
+  </a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#sim-packages">Packages</a>
+    <a href="#payment">Payment</a>
+    <a href="#order">Order</a>
+    <a href="#faq">FAQ</a>
+    <a href="#order" class="nav-cta">Get Started</a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===== MOBILE MENU ===== -->
+<div id="mobile-menu">
+  <a href="#about" class="mobile-link">About</a>
+  <a href="#pricing" class="mobile-link">Pricing</a>
+  <a href="#sim-packages" class="mobile-link">Packages</a>
+  <a href="#payment" class="mobile-link">Payment</a>
+  <a href="#order" class="mobile-link">Order</a>
+  <a href="#faq" class="mobile-link">FAQ</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="hero-bg-glow cyan"></div>
+  <div class="hero-bg-glow purple"></div>
+  <div class="hero-bg-glow blue"></div>
+  <div class="hero-shield">
+    <div class="shield-ring"></div>
+    <div class="shield-ring"></div>
+    <div class="shield-ring"></div>
+  </div>
+  <div class="hero-content">
+    <img src="https://z-cdn-media.chatglm.cn/files/f01f397d-ffe6-4cc5-9872-216b348d74f5.png?auth_key=1879679858-255b9462dac043afb8c8ca2035e9797f-0-6a7ed80671615372ebb00ac247ed27ad" alt="Night Owl VPN" class="hero-logo-img">
+    <div class="hero-badge"><span class="dot"></span> Secure &amp; Private</div>
+    <h1 class="hero-title">
+      <span class="night">NIGHT</span> <span class="owl">OWL</span> <span class="vpn">VPN</span>
+    </h1>
+    <div class="hero-typewriter"><span id="typed-text"></span><span class="typed-cursor">|</span></div>
+    <div class="hero-buttons">
+      <a href="#pricing" class="btn btn-primary"><span class="iconify" data-icon="mdi:shield-lock"></span> Get Config Now</a>
+      <a href="#about" class="btn btn-secondary"><span class="iconify" data-icon="mdi:information-outline"></span> Learn More</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="section-label">About Us</div>
+        <h2 class="section-title">Premium VPN <span class="gradient">Configuration</span> Service</h2>
+        <p class="section-desc">We provide high-quality VPN configurations powered by High Quality VPS servers, delivering unmatched speed, stability, and performance for all your browsing needs.</p>
+        <div class="about-features">
+          <div class="about-feature reveal reveal-delay-1">
+            <div class="about-feature-icon"><span class="iconify" data-icon="mdi:server"></span></div>
+            <div>
+              <h4>Premium VPS Servers</h4>
+              <p>High-quality servers ensuring maximum uptime and blazing-fast connection speeds.</p>
+            </div>
+          </div>
+          <div class="about-feature reveal reveal-delay-2">
+            <div class="about-feature-icon"><span class="iconify" data-icon="mdi:speedometer"></span></div>
+            <div>
+              <h4>Optimized Performance</h4>
+              <p>Configurations tuned for speed with minimal latency and zero buffering.</p>
+            </div>
+          </div>
+          <div class="about-feature reveal reveal-delay-3">
+            <div class="about-feature-icon"><span class="iconify" data-icon="mdi:shield-check"></span></div>
+            <div>
+              <h4>Rock-Solid Stability</h4>
+              <p>Stay connected without drops. Our configs maintain steady, reliable connections.</p>
+            </div>
+          </div>
+          <div class="about-feature reveal reveal-delay-4">
+            <div class="about-feature-icon"><span class="iconify" data-icon="mdi:headset"></span></div>
+            <div>
+              <h4>24/7 Active Support</h4>
+              <p>Full customer support during your entire active subscription period.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about-visual reveal reveal-delay-2">
+        <div class="about-visual-inner">
+          <span class="iconify icon" data-icon="mdi:shield-lock-outline"></span>
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section id="pricing">
+  <div class="container text-center">
+    <div class="section-label reveal">Pricing Plans</div>
+    <h2 class="section-title reveal reveal-delay-1">Choose Your <span class="gradient">Data Plan</span></h2>
+    <p class="section-desc reveal reveal-delay-2">Affordable premium VPN configurations for every need. All plans valid for 30 days.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal reveal-delay-1">
+        <div class="pricing-data">100 GB</div>
+        <div class="pricing-price"><span class="pricing-currency">Rs.</span>200</div>
+        <div class="pricing-period">Per 30 days</div>
+        <ul class="pricing-features">
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> 100GB Data Limit</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> High-Speed VPS</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> 30 Days Validity</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> Full Support</li>
+        </ul>
+        <a href="#order" class="btn btn-primary btn-sm btn-full">Buy Now</a>
+      </div>
+      <div class="pricing-card reveal reveal-delay-2">
+        <div class="pricing-data">200 GB</div>
+        <div class="pricing-price"><span class="pricing-currency">Rs.</span>300</div>
+        <div class="pricing-period">Per 30 days</div>
+        <ul class="pricing-features">
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> 200GB Data Limit</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> High-Speed VPS</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> 30 Days Validity</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> Full Support</li>
+        </ul>
+        <a href="#order" class="btn btn-primary btn-sm btn-full">Get Config</a>
+      </div>
+      <div class="pricing-card reveal reveal-delay-3">
+        <div class="pricing-data">300 GB</div>
+        <div class="pricing-price"><span class="pricing-currency">Rs.</span>400</div>
+        <div class="pricing-period">Per 30 days</div>
+        <ul class="pricing-features">
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> 300GB Data Limit</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> High-Speed VPS</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> 30 Days Validity</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> Full Support</li>
+        </ul>
+        <a href="#order" class="btn btn-primary btn-sm btn-full">Order Now</a>
+      </div>
+      <div class="pricing-card reveal reveal-delay-4">
+        <div class="pricing-badge">Best Value</div>
+        <div class="pricing-data">Unlimited</div>
+        <div class="pricing-price"><span class="pricing-currency">Rs.</span>500</div>
+        <div class="pricing-period">Per 30 days</div>
+        <ul class="pricing-features">
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> Unlimited Data</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> No Speed Limits</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> 30 Days Validity</li>
+          <li><span class="iconify" data-icon="mdi:check-circle"></span> Priority Support</li>
+        </ul>
+        <a href="#order" class="btn btn-gold btn-sm btn-full">Order Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICE INFO ===== -->
+<section id="services">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label reveal">Service Details</div>
+      <h2 class="section-title reveal reveal-delay-1">Important <span class="gradient">Information</span></h2>
+      <p class="section-desc reveal reveal-delay-2">Please read before placing your order.</p>
+    </div>
+    <div class="service-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <div class="num">01</div>
+        <div>
+          <h4>30-Day Validity</h4>
+          <p>All VPN packages are valid for exactly 30 days from the date of activation.</p>
+        </div>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="num">02</div>
+        <div>
+          <h4>Renewal Required</h4>
+          <p>Customers must renew their package after the 30-day period expires to continue service.</p>
+        </div>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <div class="num">03</div>
+        <div>
+          <h4>100% Active Support</h4>
+          <p>Full customer support is provided during your entire active subscription period.</p>
+        </div>
+      </div>
+      <div class="service-card reveal reveal-delay-4">
+        <div class="num">04</div>
+        <div>
+          <h4>SIM Package Required</h4>
+          <p>You must already have an active supported SIM data package to use our VPN configs.</p>
+        </div>
+      </div>
+      <div class="service-card reveal reveal-delay-5">
+        <div class="num">05</div>
+        <div>
+          <h4>Unlimited Usage</h4>
+          <p>Unlimited usage is possible through our optimized VPN configurations.</p>
+        </div>
+      </div>
+      <div class="service-card reveal reveal-delay-6">
+        <div class="num">06</div>
+        <div>
+          <h4>No Limits on Unlimited</h4>
+          <p>Unlimited packages work without any speed limits or GB restrictions whatsoever.</p>
+        </div>
+      </div>
+    </div>
+    <div class="service-note reveal">
+      <span class="iconify" data-icon="mdi:alert-circle-outline"></span>
+      <p>Your existing SIM data package must remain active throughout the 30-day VPN period for configurations to work properly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SIM PACKAGES ===== -->
+<section id="sim-packages">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label reveal">Compatibility</div>
+      <h2 class="section-title reveal reveal-delay-1">Supported <span class="gradient">SIM Packages</span></h2>
+      <p class="section-desc reveal reveal-delay-2">Our VPN configurations work with these specific data packages.</p>
+    </div>
+    <div class="sim-grid">
+      <div class="sim-card dialog reveal reveal-delay-1">
+        <div class="sim-provider"><span class="iconify" data-icon="mdi:sim" style="margin-right:6px"></span>Dialog</div>
+        <div class="sim-packages">
+          <div class="sim-pkg"><strong>348 Package</strong> — Standard data package</div>
+          <div class="sim-pkg"><strong>Router Zoom Unlimited 724</strong> — Router users</div>
+        </div>
+      </div>
+      <div class="sim-card slt reveal reveal-delay-2">
+        <div class="sim-provider"><span class="iconify" data-icon="mdi:sim" style="margin-right:6px"></span>SLT</div>
+        <div class="sim-packages">
+          <div class="sim-pkg"><strong>Router Zoom / Netflix Unlimited</strong> — Router package</div>
+        </div>
+      </div>
+      <div class="sim-card airtel-old reveal reveal-delay-3">
+        <div class="sim-provider"><span class="iconify" data-icon="mdi:sim" style="margin-right:6px"></span>Airtel Old SIM</div>
+        <div class="sim-packages">
+          <div class="sim-pkg"><strong>YouTube 260 Unlimited</strong> — YouTube unlimited</div>
+        </div>
+      </div>
+      <div class="sim-card airtel-new reveal reveal-delay-4">
+        <div class="sim-provider"><span class="iconify" data-icon="mdi:sim" style="margin-right:6px"></span>Airtel New SIM</div>
+        <div class="sim-packages">
+          <div class="sim-pkg"><strong>TikTok 997 Unlimited</strong> — TikTok unlimited</div>
+        </div>
+      </div>
+      <div class="sim-card mobitel reveal reveal-delay-5">
+        <div class="sim-provider"><span class="iconify" data-icon="mdi:sim" style="margin-right:6px"></span>Mobitel</div>
+        <div class="sim-packages">
+          <div class="sim-pkg"><strong>222 Zoom Package</strong> — Android devices only</div>
+        </div>
+        <div class="sim-note-label">* Requires HTTP Injector &amp; Device ID</div>
+      </div>
+      <div class="sim-card hutch reveal reveal-delay-6">
+        <div class="sim-provider"><span class="iconify" data-icon="mdi:sim" style="margin-right:6px"></span>Hutch</div>
+        <div class="sim-packages">
+          <div class="sim-pkg"><strong>Zoom 224 Package</strong> — Standard zoom</div>
+        </div>
+      </div>
+    </div>
+    <div class="sim-disclaimer reveal">
+      <p><span class="iconify" data-icon="mdi:information-outline" style="color:var(--neon-purple);vertical-align:middle;margin-right:6px"></span>If your package is not listed, custom configs may still be available, but speed limitations can occur.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAYMENT ===== -->
+<section id="payment">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label reveal">Payment</div>
+      <h2 class="section-title reveal reveal-delay-1">Payment <span class="gradient">Methods</span></h2>
+      <p class="section-desc reveal reveal-delay-2">Choose your preferred payment method below.</p>
+    </div>
+    <div class="payment-grid">
+      <div class="payment-card reveal reveal-delay-1">
+        <h3><span class="iconify" data-icon="mdi:bank" style="color:var(--neon-cyan)"></span> Bank Transfer</h3>
+        <div class="payment-detail">
+          <span class="label">Bank</span>
+          <span class="value">Sampath Bank</span>
+        </div>
+        <div class="payment-detail">
+          <span class="label">Account Number</span>
+          <span class="value">1118 5297 6973</span>
+        </div>
+        <div class="payment-detail">
+          <span class="label">Account Name</span>
+          <span class="value">GJD Dilshan</span>
+        </div>
+        <div class="payment-detail">
+          <span class="label">Branch</span>
+          <span class="value">Baddegama</span>
+        </div>
+      </div>
+      <div class="payment-card reveal reveal-delay-2">
+        <h3><span class="iconify" data-icon="mdi:cellphone" style="color:var(--neon-green)"></span> Ezcash</h3>
+        <div class="payment-detail">
+          <span class="label">Ezcash Number</span>
+          <span class="value">076 3420 752</span>
+        </div>
+        <div class="payment-detail" style="border-bottom:none;padding-top:20px">
+          <span class="label">Status</span>
+          <span class="value" style="color:var(--neon-green)">Active</span>
+        </div>
+        <div class="payment-warning">
+          <span class="iconify" data-icon="mdi:alert"></span>
+          <p>If paying through Ezcash, please add Rs.20 extra to cover transaction fees.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ORDER FORM ===== -->
+<section id="order">
+  <div class="container text-center">
+    <div class="section-label reveal">Place Order</div>
+    <h2 class="section-title reveal reveal-delay-1">Submit Your <span class="gradient">Order</span></h2>
+    <p class="section-desc reveal reveal-delay-2">Fill in the details below and your order will be sent directly via WhatsApp.</p>
+    <div class="order-form-wrapper reveal reveal-delay-3">
+      <form id="orderForm" onsubmit="submitOrder(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" placeholder="Enter first name" required>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name *</label>
+            <input type="text" id="lastName" placeholder="Enter last name" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="mobile">Mobile Number *</label>
+          <input type="tel" id="mobile" placeholder="07XX XXX XXX" required>
+        </div>
+        <div class="form-group">
+          <label for="simPackage">Current SIM Package *</label>
+          <select id="simPackage" required onchange="toggleDeviceId()">
+            <option value="" disabled selected>Select your SIM package</option>
+            <option value="Dialog 348">Dialog — 348 Package</option>
+            <option value="Dialog Router Zoom 724">Dialog — Router Zoom Unlimited 724</option>
+            <option value="SLT Router Zoom/Netflix">SLT — Router Zoom/Netflix Unlimited</option>
+            <option value="Airtel Old YouTube 260">Airtel Old SIM — YouTube 260 Unlimited</option>
+            <option value="Airtel New TikTok 997">Airtel New SIM — TikTok 997 Unlimited</option>
+            <option value="Mobitel 222 Zoom">Mobitel — 222 Zoom (Android Only)</option>
+            <option value="Hutch Zoom 224">Hutch — Zoom 224</option>
+            <option value="Other">Other / Not Listed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="vpnPackage">Select VPN Data Package *</label>
+          <select id="vpnPackage" required>
+            <option value="" disabled selected>Select a VPN package</option>
+            <option value="100GB — Rs.200">100 GB — Rs.200</option>
+            <option value="200GB — Rs.300">200 GB — Rs.300</option>
+            <option value="300GB — Rs.400">300 GB — Rs.400</option>
+            <option value="Unlimited — Rs.500">Unlimited — Rs.500</option>
+          </select>
+        </div>
+        <div class="form-group device-id-group" id="deviceIdGroup">
+          <label for="deviceId">Device ID (HTTP Injector) *</label>
+          <input type="text" id="deviceId" placeholder="Enter your Device ID">
+        </div>
+        <div class="form-group">
+          <label>Upload Payment Slip</label>
+          <div class="form-file" id="fileDrop">
+            <input type="file" id="paymentSlip" accept="image/*" onchange="handleFile(this)">
+            <span class="iconify" data-icon="mdi:cloud-upload-outline"></span>
+            <p>Click to upload or drag your payment slip</p>
+            <p class="file-name" id="fileName"></p>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top:8px">
+          <span class="iconify" data-icon="mdi:send"></span> Submit Order via WhatsApp
+        </button>
+        <p class="form-submit-note">You will be redirected to WhatsApp to complete your order. Please send the payment slip as a separate message after submitting.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section id="faq">
+  <div class="container text-center">
+    <div class="section-label reveal">FAQ</div>
+    <h2 class="section-title reveal reveal-delay-1">Frequently Asked <span class="gradient">Questions</span></h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item reveal reveal-delay-1">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <h4>How long does the VPN configuration last?</h4>
+        <span class="iconify icon" data-icon="mdi:plus"></span>
+      </div>
+      <div class="faq-answer">
+        <p>All VPN packages are valid for 30 days from the date of activation. After 30 days, you need to renew your package to continue using the service.</p>
+      </div>
+    </div>
+    <div class="faq-item reveal reveal-delay-2">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <h4>Do I need an active SIM data package?</h4>
+        <span class="iconify icon" data-icon="mdi:plus"></span>
+      </div>
+      <div class="faq-answer">
+        <p>Yes, you must already have a supported SIM data package activated on your device. Our VPN configurations work on top of your existing data package.</p>
+      </div>
+    </div>
+    <div class="faq-item reveal reveal-delay-3">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <h4>What does the Unlimited package include?</h4>
+        <span class="iconify icon" data-icon="mdi:plus"></span>
+      </div>
+      <div class="faq-answer">
+        <p>The Unlimited package (Rs.500) has no GB limits and no speed limits. You can use as much data as you want at maximum speed throughout the 30-day period.</p>
+      </div>
+    </div>
+    <div class="faq-item reveal reveal-delay-4">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <h4>Why do Mobitel users need a Device ID?</h4>
+        <span class="iconify icon" data-icon="mdi:plus"></span>
+      </div>
+      <div class="faq-answer">
+        <p>Mobitel 222 Zoom package requires HTTP Injector app, which uses a unique Device ID to generate and apply the VPN configuration. This is only needed for Mobitel users.</p>
+      </div>
+    </div>
+    <div class="faq-item reveal reveal-delay-5">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <h4>How do I make the payment?</h4>
+        <span class="iconify icon" data-icon="mdi:plus"></span>
+      </div>
+      <div class="faq-answer">
+        <p>You can pay via Sampath Bank transfer or Ezcash. If using Ezcash, please add Rs.20 extra. After payment, upload the slip through the order form and submit.</p>
+      </div>
+    </div>
+    <div class="faq-item reveal reveal-delay-6">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <h4>My SIM package is not listed. Can I still use the VPN?</h4>
+        <span class="iconify icon" data-icon="mdi:plus"></span>
+      </div>
+      <div class="faq-answer">
+        <p>Custom configurations may still be available for unlisted packages, but speed limitations can occur. Contact us via WhatsApp to check compatibility before ordering.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact">
+  <div class="container text-center">
+    <div class="section-label reveal">Contact Us</div>
+    <h2 class="section-title reveal reveal-delay-1">Get in <span class="gradient">Touch</span></h2>
+    <p class="section-desc reveal reveal-delay-2">Reach out to us on any of our social platforms.</p>
+    <div class="contact-grid">
+      <a href="https://wa.me/94751621592" target="_blank" class="contact-card whatsapp reveal reveal-delay-1">
+        <span class="iconify" data-icon="mdi:whatsapp"></span>
+        <span>WhatsApp: 075 1621 592</span>
+      </a>
+      <a href="https://www.facebook.com/share/17VdFae3JU/" target="_blank" class="contact-card facebook reveal reveal-delay-2">
+        <span class="iconify" data-icon="mdi:facebook"></span>
+        <span>Facebook Page</span>
+      </a>
+      <a href="https://www.tiktok.com/@nightowl_vpn?_r=1&_t=ZS-96ZmRzxplLA" target="_blank" class="contact-card tiktok reveal reveal-delay-3">
+        <span class="iconify" data-icon="ic:baseline-tiktok"></span>
+        <span>TikTok: @nightowl_vpn</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-glow"></div>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="https://z-cdn-media.chatglm.cn/files/f01f397d-ffe6-4cc5-9872-216b348d74f5.png?auth_key=1879679858-255b9462dac043afb8c8ca2035e9797f-0-6a7ed80671615372ebb00ac247ed27ad" alt="Night Owl VPN">
+      <p>Premium VPN configuration service powered by high-quality VPS servers for the best speed, stability, and performance.</p>
+      <div class="footer-social">
+        <a href="https://wa.me/94751621592" target="_blank" aria-label="WhatsApp"><span class="iconify" data-icon="mdi:whatsapp"></span></a>
+        <a href="https://www.facebook.com/share/17VdFae3JU/" target="_blank" aria-label="Facebook"><span class="iconify" data-icon="mdi:facebook"></span></a>
+        <a href="https://www.tiktok.com/@nightowl_vpn?_r=1&_t=ZS-96ZmRzxplLA" target="_blank" aria-label="TikTok"><span class="iconify" data-icon="ic:baseline-tiktok"></span></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="#about">About</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#sim-packages">SIM Packages</a>
+      <a href="#payment">Payment</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#order">Place Order</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact Us</a>
+      <a href="https://wa.me/94751621592" target="_blank">WhatsApp Support</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 Night Owl VPN. All rights reserved.</p>
+    <p style="color:var(--neon-cyan);font-family:'JetBrains Mono',monospace;font-size:0.7rem">Secure • Private • Unlimited</p>
+  </div>
+</footer>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div id="toast-container"></div>
+
+<script>
+// ===== LOADER =====
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    initTypewriter();
+  }, 2200);
+});
+document.body.style.overflow = 'hidden';
+
+// ===== CUSTOM CURSOR =====
+const cursor = document.getElementById('cursor');
+const follower = document.getElementById('cursor-follower');
+let mx = 0, my = 0, fx = 0, fy = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 4 + 'px';
+  cursor.style.top = my - 4 + 'px';
+});
+
+function animCursor() {
+  fx += (mx - fx) * 0.15;
+  fy += (my - fy) * 0.15;
+  follower.style.left = fx - 18 + 'px';
+  follower.style.top = fy - 18 + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+document.querySelectorAll('a, button, input, select, .faq-question, .form-file').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); follower.classList.add('hover'); });
+  el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); follower.classList.remove('hover'); });
+});
+
+// ===== PARTICLES =====
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const isMobile = window.innerWidth < 768;
+const PARTICLE_COUNT = isMobile ? 30 : 70;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.4;
+    this.speedY = (Math.random() - 0.5) * 0.4;
+    this.opacity = Math.random() * 0.5 + 0.1;
+    const colors = ['0,229,255', '168,85,247', '41,121,255', '251,191,36'];
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
+    ctx.fill();
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = `rgba(${this.color},0.3)`;
+  }
+}
+
+for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+function drawLines() {
+  if (isMobile) return;
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0,229,255,${0.06 * (1 - dist / 120)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  drawLines();
+  ctx.shadowBlur = 0;
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ===== TYPEWRITER =====
+function initTypewriter() {
+  const texts = [
+    'Premium VPN Configuration Service',
+    'Unlimited Speed & Stability',
+    'High Quality VPS Servers',
+    'Secure & Private Browsing',
+    '30-Day Active Support'
+  ];
+  const el = document.getElementById('typed-text');
+  let ti = 0, ci = 0, deleting = false, delay = 80;
+
+  function type() {
+    const current = texts[ti];
+    if (!deleting) {
+      el.textContent = current.substring(0, ci + 1);
+      ci++;
+      if (ci === current.length) { deleting = true; delay = 2000; }
+      else delay = 60 + Math.random() * 40;
+    } else {
+      el.textContent = current.substring(0, ci - 1);
+      ci--;
+      if (ci === 0) { deleting = false; ti = (ti + 1) % texts.length; delay = 500; }
+      else delay = 30;
+    }
+    setTimeout(type, delay);
+  }
+  type();
+}
+
+// ===== NAVIGATION =====
+const navbar = document.getElementById('navbar');
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  mobileMenu.classList.toggle('active');
+  document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : 'auto';
+});
+
+document.querySelectorAll('.mobile-link').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    mobileMenu.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  });
+});
+
+// ===== SCROLL REVEAL =====
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('active');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+// ===== FAQ ACCORDION =====
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const wasActive = item.classList.contains('active');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+  if (!wasActive) item.classList.add('active');
+}
+
+// ===== DEVICE ID TOGGLE =====
+function toggleDeviceId() {
+  const sim = document.getElementById('simPackage').value;
+  const group = document.getElementById('deviceIdGroup');
+  if (sim === 'Mobitel 222 Zoom') {
+    group.classList.add('show');
+    document.getElementById('deviceId').setAttribute('required', 'true');
+  } else {
+    group.classList.remove('show');
+    document.getElementById('deviceId').removeAttribute('required');
+  }
+}
+
+// ===== FILE UPLOAD =====
+function handleFile(input) {
+  const fileName = document.getElementById('fileName');
+  if (input.files.length > 0) {
+    fileName.textContent = input.files[0].name;
+    fileName.style.display = 'block';
+  } else {
+    fileName.style.display = 'none';
+  }
+}
+
+// ===== ORDER FORM → WHATSAPP =====
+function submitOrder(e) {
+  e.preventDefault();
+
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const mobile = document.getElementById('mobile').value.trim();
+  const simPackage = document.getElementById('simPackage').value;
+  const vpnPackage = document.getElementById('vpnPackage').value;
+  const deviceId = document.getElementById('deviceId').value.trim();
+  const slipFile = document.getElementById('paymentSlip').files.length > 0;
+
+  if (!firstName || !lastName || !mobile || !simPackage || !vpnPackage) {
+    showToast('Please fill in all required fields.', 'info');
+    return;
+  }
+
+  const message = `🦉 *NIGHT OWL VPN — New Order*\n\n` +
+    `👤 *Name:* ${firstName} ${lastName}\n` +
+    `📱 *Mobile:* ${mobile}\n` +
+    `📡 *SIM Package:* ${simPackage}\n` +
+    `📦 *VPN Package:* ${vpnPackage}\n` +
+    (deviceId ? `🔧 *Device ID:* ${deviceId}\n` : '') +
+    `💳 *Payment Slip:* ${slipFile ? 'Uploaded (will send as image)' : 'Not uploaded'}\n\n` +
+    `Please confirm my order. Thank you!`;
+
+  const encoded = encodeURIComponent(message);
+  window.open(`https://wa.me/94751621592?text=${encoded}`, '_blank');
+
+  showToast('Redirecting to WhatsApp... Send your payment slip as a separate message!', 'success');
+
+  setTimeout(() => {
+    document.getElementById('orderForm').reset();
+    document.getElementById('fileName').style.display = 'none';
+    document.getElementById('deviceIdGroup').classList.remove('show');
+  }, 1000);
+}
+
+// ===== TOAST =====
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  const icon = type === 'success' ? 'mdi:check-circle' : 'mdi:information';
+  toast.innerHTML = `<span class="iconify" data-icon="${icon}"></span><span>${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.classList.add('out'); setTimeout(() => toast.remove(), 300); }, 4000);
+}
+
+// ===== SMOOTH SCROLL FOR ANCHOR LINKS =====
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      const offset = 80;
+      const pos = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: pos, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>
